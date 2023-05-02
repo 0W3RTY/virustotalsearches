@@ -1,0 +1,38 @@
+import pandas as pd
+import requests
+
+# Reemplace 'API_KEY' con su clave de API de VirusTotal
+API_KEY = 'API_KEY'
+
+# URL de la API de VirusTotal
+url = 'https://www.virustotal.com/api/v3/ip_addresses/'
+
+# Configurar encabezados de solicitud
+headers = {'x-apikey': API_KEY}
+
+# Leer el archivo Excel
+df = pd.read_excel('file.xlsx')
+
+# Crear una columna para los resultados
+df['Resultado'] = ''
+
+# Analizar cada dirección IP
+for i in df.index:
+    ip = df.at[i, 'IP']
+    response = requests.get(url + ip, headers=headers)
+    json_response = response.json()
+    if 'data' in json_response and 'attributes' in json_response['data']:
+        attributes = json_response['data']['attributes']
+        if 'last_analysis_stats' in attributes:
+            stats = attributes['last_analysis_stats']
+            if stats['malicious'] == 0:
+                df.at[i, 'Resultado'] = 'Seguro'
+            else:
+                df.at[i, 'Resultado'] = 'Malicioso'
+        else:
+            df.at[i, 'Resultado'] = 'No encontrado'
+    else:
+        df.at[i, 'Resultado'] = 'No encontrado'
+
+# Guardar los resultados en un nuevo archivo Excel
+df.to_excel('resultados.xlsx', index=False)
