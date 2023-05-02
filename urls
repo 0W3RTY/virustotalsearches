@@ -1,0 +1,46 @@
+import requests
+import csv
+
+# Configuración de VirusTotal API
+API_KEY = "TU_CLAVE_API_AQUI"
+VT_API_URL = "https://www.virustotal.com/api/v3/urls"
+
+# Función para analizar una URL en VirusTotal
+def analyze_url(url):
+    headers = {
+        "x-apikey": API_KEY,
+        "Content-Type": "application/json"
+    }
+    data = {
+        "url": url
+    }
+    response = requests.post(VT_API_URL, headers=headers, json=data)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return None
+
+# Abrir el archivo CSV de entrada
+with open("urls.csv") as csv_file:
+    csv_reader = csv.reader(csv_file)
+    next(csv_reader)  # Ignorar la primera fila (cabecera)
+    urls = [row[0] for row in csv_reader]
+
+# Analizar cada URL en VirusTotal y escribir los resultados en el archivo CSV de salida
+with open("resultados.csv", mode="w", newline="") as csv_file:
+    fieldnames = ["URL", "Score", "Mala"]
+    writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+    writer.writeheader()
+    for url in urls:
+        vt_data = analyze_url(url)
+        if vt_data:
+            score = vt_data["data"]["attributes"]["last_analysis_stats"]["malicious"]
+            mala = "Sí" if score > 0 else "No"
+            writer.writerow({
+                "URL": url,
+                "Score": score,
+                "Mala": mala
+            })
+            print(f"{url}: Score = {score}, Mala = {mala}")
+        else:
+            print(f"No se pudo analizar la URL: {url}")
