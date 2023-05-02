@@ -7,7 +7,7 @@ Scripts en python para realizar busquedas en virustotal de Ips o Urls almacenada
 En este script, leemos un archivo de excel llamado *file.xlsx* que contiene una columna llamada IP. Este a su vez contiene las direcciones IP a analizar.
 Después de analizar cada dirección IP, agregamos una nueva columna llamada *Resultado* al archivo Excel y guardamos los resultados en un nuevo archivo llamado *resultados.xlsx*.
 
-Para usar este script, simplemente coloque su archivo de Excel con las direcciones IP en la misma carpeta que el script y reemplace *'API_KEY'* con su clave de API de VirusTotal.
+Para usar este script, simplemente coloque su archivo de Excel con las direcciones IP en la misma carpeta que el script y reemplace en el script *'API_KEY'* con su clave de API de VirusTotal.
 
 También asegúrese de instalar las bibliotecas pandas y openpyxl antes de ejecutar el script.
 Puede hacerlo ejecutando los siguientes comandos en la línea de comandos de su sistema:
