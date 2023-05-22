@@ -1,38 +1,47 @@
-import pandas as pd
 import requests
+import openpyxl
 
-# Reemplace 'API_KEY' con su clave de API de VirusTotal
-API_KEY = 'API_KEY'
+API_URL_IP = 'https://www.virustotal.com/api/v3/ip_addresses/{0}'
+API_KEY = 'AQUI SU APIKEY'
 
-# URL de la API de VirusTotal
-url = 'https://www.virustotal.com/api/v3/ip_addresses/'
+def process_ip(ip):
+    try:
+        response = requests.get(API_URL_IP.format(ip), headers={'x-apikey': API_KEY})
+        response_json = response.json()
+        detections = response_json['data']['attributes']['last_analysis_results']
+        positive_count = sum(1 for result in detections.values() if result['category'] == 'malicious')
+        total_count = len(detections)
+        score = f'{positive_count}/{total_count}'
+        positives = 'Yes' if positive_count > 0 else 'No'
+        return [ip, positives, score]
+    except Exception as e:
+        print(f'Error procesando la IP {ip}: {e}')
+        return [ip, 'Error', 'Error']
 
-# Configurar encabezados de solicitud
-headers = {'x-apikey': API_KEY}
+def read_excel(input_filename):
+    ips = []
+    workbook = openpyxl.load_workbook(input_filename)
+    worksheet = workbook.active
+    for row in worksheet.iter_rows(min_row=2, values_only=True):
+        ips.append(row[0])
+    return ips
 
-# Leer el archivo Excel
-df = pd.read_excel('file.xlsx')
+def write_to_excel(results, output_filename):
+    workbook = openpyxl.Workbook()
+    worksheet = workbook.active
+    worksheet.append(['IP', 'Positives', 'Score'])
+    for row in results:
+        worksheet.append(row)
+    workbook.save(output_filename)
 
-# Crear una columna para los resultados
-df['Resultado'] = ''
+def main(input_filename, output_filename):
+    ips = read_excel(input_filename)
+    results = []
+    for ip in ips:
+        results.append(process_ip(ip))
+    write_to_excel(results, output_filename)
 
-# Analizar cada dirección IP
-for i in df.index:
-    ip = df.at[i, 'IP']
-    response = requests.get(url + ip, headers=headers)
-    json_response = response.json()
-    if 'data' in json_response and 'attributes' in json_response['data']:
-        attributes = json_response['data']['attributes']
-        if 'last_analysis_stats' in attributes:
-            stats = attributes['last_analysis_stats']
-            if stats['malicious'] == 0:
-                df.at[i, 'Resultado'] = 'Seguro'
-            else:
-                df.at[i, 'Resultado'] = 'Malicioso'
-        else:
-            df.at[i, 'Resultado'] = 'No encontrado'
-    else:
-        df.at[i, 'Resultado'] = 'No encontrado'
-
-# Guardar los resultados en un nuevo archivo Excel
-df.to_excel('resultados.xlsx', index=False)
+if __name__ == '__main__':
+    input_filename = 'ips.xlsx'
+    output_filename = 'results.xlsx'
+    main(input_filename, output_filename)
