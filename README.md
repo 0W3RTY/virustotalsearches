@@ -16,10 +16,11 @@ Manually checking multiple file hashes during an investigation is time-consuming
 ## 🛠️ Installation & Setup
 
 1. **Clone the repository:**
-   ```bash
+   
+````bash
    git clone [https://github.com/0W3RTY/virustotalsearches.git](https://github.com/0W3RTY/virustotalsearches.git)
    cd virustotalsearches
-
+````
 
 2. **Install Dependencies:**
 
