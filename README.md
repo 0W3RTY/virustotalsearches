@@ -37,7 +37,7 @@ Python**
 api_key = "YOUR_API_KEY_HERE"
  ````
 
-📖 **Usage**
+## 📖 Usage
 <br><br>
 1.- Create a file named indicators.txt in the root directory.
 
@@ -56,7 +56,7 @@ Run the script:
 python virustotal_v3.py
 ````
 
-📊 **Example Output**
+## 📊 Example Output
 
 ````
 Plaintext
@@ -66,7 +66,7 @@ Plaintext
 [-] Detections: 0 / 72 (CLEAN)
 ````
 
-🎯 **MITRE ATT&CK Context**
+## 🎯 MITRE ATT&CK Context
 This tool supports the Resource Development tactic, specifically Stage Capabilities (T1608), by allowing defenders to quickly identify known malicious tools used by adversaries.
 
 Author: 0W3RTY
