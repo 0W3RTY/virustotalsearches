@@ -38,7 +38,7 @@ api_key = "YOUR_API_KEY_HERE"
  ````
 
 ## 📖 Usage
-<br><br>
+
 1.- **Create a file named indicators.txt in the root directory.**
 
 2.- **Add your indicators (one per line). Example:**
