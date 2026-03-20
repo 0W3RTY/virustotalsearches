@@ -1,26 +1,30 @@
 import requests
 import time
 import os
+import base64
 
 # --- CONFIGURATION ---
-API_KEY = "YOUR_API_KEY_HERE"  # Replace with your actual VirusTotal API Key
+API_KEY = "YOUR_API_KEY_HERE"  # Replace with your VirusTotal API Key
 INPUT_FILE = "indicators.txt"    # File containing hashes, IPs, or URLs (one per line)
 # ---------------------
 
 def get_vt_report(indicator, api_key):
+    """
+    Fetches the reputation report from VirusTotal V3 API.
+    Supports IPs, URLs, and File Hashes.
+    """
     headers = {"x-apikey": api_key}
     
-    # Determine indicator type (simple logic)
+    # Indicator type detection logic
     if "." in indicator and not indicator.startswith("http"):
-        # Likely an IP address
+        # Indicator is an IP Address
         url = f"https://www.virustotal.com/api/v3/ip_addresses/{indicator}"
     elif indicator.startswith("http"):
-        # Likely a URL (requires base64 padding removal for VT API)
-        import base64
+        # Indicator is a URL (requires base64 padding removal for VT API)
         url_id = base64.urlsafe_b64encode(indicator.encode()).decode().strip("=")
         url = f"https://www.virustotal.com/api/v3/urls/{url_id}"
     else:
-        # Assume it's a Hash (MD5, SHA1, SHA256)
+        # Indicator is a Hash (MD5, SHA1, SHA256)
         url = f"https://www.virustotal.com/api/v3/files/{indicator}"
 
     try:
@@ -40,11 +44,12 @@ def get_vt_report(indicator, api_key):
 
 def main():
     if not os.path.exists(INPUT_FILE):
-        print(f"[!] Error: {INPUT_FILE} not found. Create it and add indicators.")
+        print(f"[!] Error: {INPUT_FILE} not found. Please create it first.")
         return
 
-    print(f"--- VirusTotal Multi-Scanner ---")
+    print(f"--- VirusTotal Multi-Indicator Scanner ---")
     
+    # Load indicators from file
     with open(INPUT_FILE, "r") as f:
         indicators = [line.strip() for line in f if line.strip()]
 
@@ -53,18 +58,20 @@ def main():
         report = get_vt_report(item, API_KEY)
 
         if isinstance(report, dict):
+            # Extract analysis statistics
             stats = report['data']['attributes']['last_analysis_stats']
             malicious = stats['malicious']
             total = sum(stats.values())
             
             status = "🚨 MALICIOUS" if malicious > 0 else "✅ CLEAN"
-            print(f"[{status}] {item} -> Detections: {malicious}/{total}")
+            # Clear line and print result
+            print(f"[{status}] {item} -> Detections: {malicious}/{total}    ")
         elif report == "NOT_FOUND":
-            print(f"[-] {item} -> Not found in VirusTotal database.")
+            print(f"[-] {item} -> Not found in VirusTotal database.      ")
         else:
-            print(f"[?] {item} -> Source error: {report}")
+            print(f"[?] {item} -> Error: {report}                          ")
 
-        # Sleep to avoid hitting free API limits (4 requests per minute)
+        # Rate limiting: 4 requests per minute for free API tier
         time.sleep(15)
 
 if __name__ == "__main__":
