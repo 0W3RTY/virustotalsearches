@@ -66,6 +66,8 @@ Plaintext
 ````
 
 ## 🎯 MITRE ATT&CK Context
-This tool supports the Resource Development tactic, specifically Stage Capabilities (T1608), by allowing defenders to quickly identify known malicious IOCs used by adversaries.
+This tool automates the **Triage and Investigation** phase by cross-referencing indicators with known adversary infrastructure. It helps defenders identify:
+* **Resource Development (TA0042):** Specifically detecting compromised or malicious infrastructure (IPs/Domains) before they are used in an active campaign.
+* **Indicator Removal (T1070):** Identifying known malicious files even if the attacker attempts to rename or modify them, by focusing on unique file hashes.
 
 Author: 0W3RTY
