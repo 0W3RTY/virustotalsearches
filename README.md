@@ -48,12 +48,13 @@ Bash
 python virustotal_v3.py
 
 📊 **Example Output**
+````
 Plaintext
 [+] Searching hash: e5081c79...
 [!] Detections: 45 / 72 (MALICIOUS)
 [+] Searching hash: d41d8cd9...
 [-] Detections: 0 / 72 (CLEAN)
-
+````
 
 🎯 **MITRE ATT&CK Context**
 This tool supports the Resource Development tactic, specifically Stage Capabilities (T1608), by allowing defenders to quickly identify known malicious tools used by adversaries.
