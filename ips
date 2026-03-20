@@ -1,47 +1,71 @@
 import requests
-import openpyxl
+import time
+import os
 
-API_URL_IP = 'https://www.virustotal.com/api/v3/ip_addresses/{0}'
-API_KEY = 'AQUI SU APIKEY'
+# --- CONFIGURATION ---
+API_KEY = "YOUR_API_KEY_HERE"  # Replace with your actual VirusTotal API Key
+INPUT_FILE = "indicators.txt"    # File containing hashes, IPs, or URLs (one per line)
+# ---------------------
 
-def process_ip(ip):
+def get_vt_report(indicator, api_key):
+    headers = {"x-apikey": api_key}
+    
+    # Determine indicator type (simple logic)
+    if "." in indicator and not indicator.startswith("http"):
+        # Likely an IP address
+        url = f"https://www.virustotal.com/api/v3/ip_addresses/{indicator}"
+    elif indicator.startswith("http"):
+        # Likely a URL (requires base64 padding removal for VT API)
+        import base64
+        url_id = base64.urlsafe_b64encode(indicator.encode()).decode().strip("=")
+        url = f"https://www.virustotal.com/api/v3/urls/{url_id}"
+    else:
+        # Assume it's a Hash (MD5, SHA1, SHA256)
+        url = f"https://www.virustotal.com/api/v3/files/{indicator}"
+
     try:
-        response = requests.get(API_URL_IP.format(ip), headers={'x-apikey': API_KEY})
-        response_json = response.json()
-        detections = response_json['data']['attributes']['last_analysis_results']
-        positive_count = sum(1 for result in detections.values() if result['category'] == 'malicious')
-        total_count = len(detections)
-        score = f'{positive_count}/{total_count}'
-        positives = 'Yes' if positive_count > 0 else 'No'
-        return [ip, positives, score]
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            return response.json()
+        elif response.status_code == 429:
+            print(f"[!] Quota exceeded. Waiting 15s...")
+            time.sleep(15)
+            return get_vt_report(indicator, api_key)
+        elif response.status_code == 404:
+            return "NOT_FOUND"
+        else:
+            return f"ERROR_{response.status_code}"
     except Exception as e:
-        print(f'Error procesando la IP {ip}: {e}')
-        return [ip, 'Error', 'Error']
+        return f"EXCEPTION_{str(e)}"
 
-def read_excel(input_filename):
-    ips = []
-    workbook = openpyxl.load_workbook(input_filename)
-    worksheet = workbook.active
-    for row in worksheet.iter_rows(min_row=2, values_only=True):
-        ips.append(row[0])
-    return ips
+def main():
+    if not os.path.exists(INPUT_FILE):
+        print(f"[!] Error: {INPUT_FILE} not found. Create it and add indicators.")
+        return
 
-def write_to_excel(results, output_filename):
-    workbook = openpyxl.Workbook()
-    worksheet = workbook.active
-    worksheet.append(['IP', 'Positives', 'Score'])
-    for row in results:
-        worksheet.append(row)
-    workbook.save(output_filename)
+    print(f"--- VirusTotal Multi-Scanner ---")
+    
+    with open(INPUT_FILE, "r") as f:
+        indicators = [line.strip() for line in f if line.strip()]
 
-def main(input_filename, output_filename):
-    ips = read_excel(input_filename)
-    results = []
-    for ip in ips:
-        results.append(process_ip(ip))
-    write_to_excel(results, output_filename)
+    for item in indicators:
+        print(f"[*] Analyzing: {item}...", end="\r")
+        report = get_vt_report(item, API_KEY)
 
-if __name__ == '__main__':
-    input_filename = 'ips.xlsx'
-    output_filename = 'results.xlsx'
-    main(input_filename, output_filename)
+        if isinstance(report, dict):
+            stats = report['data']['attributes']['last_analysis_stats']
+            malicious = stats['malicious']
+            total = sum(stats.values())
+            
+            status = "🚨 MALICIOUS" if malicious > 0 else "✅ CLEAN"
+            print(f"[{status}] {item} -> Detections: {malicious}/{total}")
+        elif report == "NOT_FOUND":
+            print(f"[-] {item} -> Not found in VirusTotal database.")
+        else:
+            print(f"[?] {item} -> Source error: {report}")
+
+        # Sleep to avoid hitting free API limits (4 requests per minute)
+        time.sleep(15)
+
+if __name__ == "__main__":
+    main()
