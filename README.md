@@ -1,4 +1,4 @@
-# 🔍 VirusTotal Bulk Hash Scanner
+# 🔍 VirusTotal Bulk IOC Scanner
 
 A Python-based automation tool designed for SOC Analysts and Incident Responders to perform bulk reputation checks against the **VirusTotal V3 API**.
 
