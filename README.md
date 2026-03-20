@@ -39,9 +39,9 @@ api_key = "YOUR_API_KEY_HERE"
 
 ## 📖 Usage
 <br><br>
-1.- Create a file named indicators.txt in the root directory.
+1.- **Create a file named indicators.txt in the root directory.**
 
-2.- Add your indicators (one per line). Example:
+2.- **Add your indicators (one per line). Example:**
 
 ````
 8.8.8.8
@@ -50,7 +50,7 @@ e5081c7944263e55179248439365c197
 Run the script:
 ````
 
-3.- Run the script:
+3.- **Run the script:**
 
 ````
 python virustotal_v3.py
