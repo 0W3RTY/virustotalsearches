@@ -19,3 +19,42 @@ Manually checking multiple file hashes during an investigation is time-consuming
    ```bash
    git clone [https://github.com/0W3RTY/virustotalsearches.git](https://github.com/0W3RTY/virustotalsearches.git)
    cd virustotalsearches
+
+
+2. **Install Dependencies:**
+
+ ````Bash
+pip install requests
+````
+
+3. **Configure API Key:**
+Replace the placeholder in the script with your personal VirusTotal API key:
+
+
+Python**
+  ````  
+api_key = "YOUR_API_KEY_HERE"
+ ````
+
+📖 **Usage**
+Create a file named hashes.txt in the same directory.
+
+Add one hash per line.
+
+Run the script:
+
+Bash
+python virustotal_v3.py
+
+📊 **Example Output**
+Plaintext
+[+] Searching hash: e5081c79...
+[!] Detections: 45 / 72 (MALICIOUS)
+[+] Searching hash: d41d8cd9...
+[-] Detections: 0 / 72 (CLEAN)
+
+
+🎯 **MITRE ATT&CK Context**
+This tool supports the Resource Development tactic, specifically Stage Capabilities (T1608), by allowing defenders to quickly identify known malicious tools used by adversaries.
+
+Author: 0W3RTY
