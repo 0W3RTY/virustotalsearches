@@ -66,6 +66,6 @@ Plaintext
 ````
 
 ## 🎯 MITRE ATT&CK Context
-This tool supports the Resource Development tactic, specifically Stage Capabilities (T1608), by allowing defenders to quickly identify known malicious tools used by adversaries.
+This tool supports the Resource Development tactic, specifically Stage Capabilities (T1608), by allowing defenders to quickly identify known malicious IOCs used by adversaries.
 
 Author: 0W3RTY
