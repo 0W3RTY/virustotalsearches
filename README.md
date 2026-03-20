@@ -5,7 +5,7 @@ A Python-based automation tool designed for SOC Analysts and Incident Responders
 
 
 ## 🎯 Overview
-Manually checking multiple file hashes during an investigation is time-consuming. This script automates the process by reading a list of MD5, SHA-1, or SHA-256 hashes from a text file and retrieving their reputation scores, providing a quick summary of malicious detections.
+Manually checking multiple file hashes during an investigation is time-consuming. This script automates the process by reading a list of IOC like MD5, SHA-1, or SHA-256 hashes, Urls, IPs, etc... from a text file and retrieving their reputation scores, providing a quick summary of malicious detections.
 
 ## 🚀 Key Features
 * **V3 API Integration:** Leverages the latest VirusTotal API for faster and more detailed reports.
