@@ -38,15 +38,19 @@ api_key = "YOUR_API_KEY_HERE"
  ````
 
 📖 **Usage**
-Create a file named hashes.txt in the same directory.
+1.- Create a file named indicators.txt in the root directory.
 
-Add one hash per line.
-
+2.- Add your indicators (one per line). Example:
+````
+8.8.8.8
+[https://suspicious-site.com](https://suspicious-site.com)
+e5081c7944263e55179248439365c197
 Run the script:
-
-Bash
+````
+3.- Run the script:
+````
 python virustotal_v3.py
-
+````
 📊 **Example Output**
 ````
 Plaintext
