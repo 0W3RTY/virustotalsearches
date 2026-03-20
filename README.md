@@ -47,7 +47,6 @@ api_key = "YOUR_API_KEY_HERE"
 8.8.8.8
 [https://suspicious-site.com](https://suspicious-site.com)
 e5081c7944263e55179248439365c197
-Run the script:
 ````
 
 3.- **Run the script:**
