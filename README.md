@@ -1,20 +1,21 @@
-### Virustotalsearches
+# 🔍 VirusTotal Bulk Hash Scanner
 
-Script en python para realizar busquedas en virustotal de Ips en bulk almacenadas en un .csv
+A Python-based automation tool designed for SOC Analysts and Incident Responders to perform bulk reputation checks against the **VirusTotal V3 API**.
 
-**IP:**
 
-En este script, leemos un archivo de excel llamado *file.xlsx* que contiene una columna llamada IP. Este a su vez contiene las direcciones IP a analizar.
 
-Al ejecutar el script después de analizar cada dirección IP, este agrega dos nuevas columna una llamada *Positives* que nos dice si la deteccion es positiva o no.
-Y otra llamada *Score* que nos da el conteo de todas las detecciones de antivirus sobre las ips agregadas. Finalmente nos guarda los resultados en un nuevo archivo llamado *resultados.xlsx*.
+## 🎯 Overview
+Manually checking multiple file hashes during an investigation is time-consuming. This script automates the process by reading a list of MD5, SHA-1, or SHA-256 hashes from a text file and retrieving their reputation scores, providing a quick summary of malicious detections.
 
-Para usar este script, simplemente coloque su archivo de Excel con las direcciones IP en la misma carpeta que el script y reemplace en el script *'API_KEY'* con su clave de API de VirusTotal.
+## 🚀 Key Features
+* **V3 API Integration:** Leverages the latest VirusTotal API for faster and more detailed reports.
+* **Bulk Processing:** Efficiently handles multiple hashes in a single execution.
+* **Clean Output:** Displays the "Malicious" vs. "Undetected" count directly in the console for rapid triage.
+* **Error Handling:** Robust management of API connection issues and invalid hash formats.
 
-También asegúrese de instalar las bibliotecas pandas y openpyxl antes de ejecutar el script.
-Puede hacerlo ejecutando los siguientes comandos en la línea de comandos de su sistema:
+## 🛠️ Installation & Setup
 
-```
-pip install pandas
-pip install openpyxl
-```
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/0W3RTY/virustotalsearches.git](https://github.com/0W3RTY/virustotalsearches.git)
+   cd virustotalsearches
